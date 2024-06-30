@@ -1,25 +1,25 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Menu } from "../entities/menu.enity";
-import { Permission } from "../entities/permission.entity";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Menu } from '../entities/menu.enity';
+import { Permission } from '../entities/permission.entity';
 
 @Injectable()
 export class PermissionService {
   constructor(
-    @InjectRepository(Permission) private permissionRepository: Repository<Permission>,
-    @InjectRepository(Menu) private menuRepository: Repository<Menu>
-  ) {
-  }
+    @InjectRepository(Permission)
+    private permissionRepository: Repository<Permission>,
+    @InjectRepository(Menu) private menuRepository: Repository<Menu>,
+  ) {}
 
   async findAll(): Promise<Permission[]> {
-    return this.permissionRepository.find({ relations: ["menus"] });
+    return this.permissionRepository.find({ relations: ['menus'] });
   }
 
   async findOne(id: number): Promise<Permission> {
     return this.permissionRepository.findOne({
-      relations: ["menus"],
-      where: { id }
+      relations: ['menus'],
+      where: { id },
     });
   }
 
@@ -28,7 +28,10 @@ export class PermissionService {
     return this.permissionRepository.save(newPermission);
   }
 
-  async update(id: number, permission: Partial<Permission>): Promise<Permission> {
+  async update(
+    id: number,
+    permission: Partial<Permission>,
+  ): Promise<Permission> {
     await this.permissionRepository.update(id, permission);
     return this.findOne(id);
   }

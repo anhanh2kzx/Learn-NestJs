@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards, Patch } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  UseGuards,
+  Patch,
+} from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CheckAbilities } from '../casl/check-abilities.decorator';
@@ -72,12 +82,18 @@ export class UserController {
   }
 
   @Patch(':userId/roles/:roleId')
-  addRoleToUser(@Param('userId') userId: string, @Param('roleId') roleId: string) {
+  addRoleToUser(
+    @Param('userId') userId: string,
+    @Param('roleId') roleId: string,
+  ) {
     return this.userService.addRoleToUser(+userId, +roleId);
   }
 
   @Patch(':userId/roles')
-  addRolesToUser(@Param('userId') userId: string, @Body('roleIds') roleIds: number[]) {
+  addRolesToUser(
+    @Param('userId') userId: string,
+    @Body('roleIds') roleIds: number[],
+  ) {
     return this.userService.addRolesToUser(+userId, roleIds);
   }
 }

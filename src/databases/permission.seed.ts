@@ -1,8 +1,8 @@
 import { DataSource, DeepPartial, EntityTarget, ObjectLiteral } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 import { Role } from '../entities/role.entity';
-import { insertDataWithPrimaryKeyId } from "../orm.config";
-import { Permission } from "../entities/permission.entity";
+import { insertDataWithPrimaryKeyId } from '../orm.config';
+import { Permission } from '../entities/permission.entity';
 export default class CreatePermission implements Seeder {
   public async run(dataSource: DataSource): Promise<void> {
     const roles = [

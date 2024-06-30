@@ -13,9 +13,6 @@ export class Menu {
   @Column()
   parentId: number;
 
-  // @ManyToMany(() => Permission, (permission) => permission.menus)
-  // permissions: Permission[];
-
   @ManyToMany(() => Permission)
   @JoinTable()
   permissions: Permission[];

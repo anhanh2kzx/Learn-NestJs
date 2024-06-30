@@ -17,7 +17,9 @@ export type AppAbility = Ability<[Actions, Subjects]>;
 @Injectable()
 export class CaslAbilityFactory {
   createForUser(user: User) {
-    const { can, cannot, build } = new AbilityBuilder<Ability<[Actions, Subjects]>>(Ability as AbilityClass<AppAbility>);
+    const { can, cannot, build } = new AbilityBuilder<
+      Ability<[Actions, Subjects]>
+    >(Ability as AbilityClass<AppAbility>);
 
     if (user?.roles.some((role) => role?.name === 'admin')) {
       can('manage', 'all');

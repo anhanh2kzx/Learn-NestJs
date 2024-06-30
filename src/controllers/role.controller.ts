@@ -1,15 +1,26 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from "@nestjs/common";
-import { UserService } from "../services/user.service";
-import { CheckAbilities } from "../casl/check-abilities.decorator";
-import { Action } from "../casl/action.enum";
-import { Role } from "../entities/role.entity";
-import { RoleService } from "../services/role.service";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { UserService } from '../services/user.service';
+import { CheckAbilities } from '../casl/check-abilities.decorator';
+import { Action } from '../casl/action.enum';
+import { Role } from '../entities/role.entity';
+import { RoleService } from '../services/role.service';
 
 // @UseGuards(JwtAuthGuard)
 @Controller('roles')
 export class RoleController {
-  constructor(private readonly userService: UserService,
-              private readonly roleService: RoleService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly roleService: RoleService,
+  ) {}
 
   @CheckAbilities({ action: Action.Read, subject: Role })
   @Get()
@@ -29,20 +40,28 @@ export class RoleController {
     return this.userService.createRole(createRoleDto);
   }
 
-  @CheckAbilities({ action: Action.Update, subject: Role })
+  // @CheckAbilities({ action: Action.Update, subject: Role })
   @Put(':id')
   updateRole(@Param('id') id: string, @Body() updateRoleDto: Partial<Role>) {
     return this.userService.updateRole(+id, updateRoleDto);
   }
 
-  @CheckAbilities({ action: Action.Delete, subject: Role })
+  // @CheckAbilities({ action: Action.Delete, subject: Role })
   @Delete(':id')
   removeRole(@Param('id') id: string) {
     return this.userService.removeRole(+id);
   }
 
   @Patch(':roleId/menus')
-  addMenusToRole(@Param('roleId') roleId: string, @Body('menuIds') menuIds: number[]) {
+  addMenusToRole(
+    @Param('roleId') roleId: string,
+    @Body('menuIds') menuIds: number[],
+  ) {
     return this.roleService.addMenusToRole(+roleId, menuIds);
+  }
+
+  @Get(':id/menus-permissions')
+  async getMenusAndPermissionsByRoleId(@Param('id') id: number) {
+    return this.roleService.getListPermissionFromRole(id);
   }
 }
