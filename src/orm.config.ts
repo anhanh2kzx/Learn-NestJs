@@ -1,15 +1,35 @@
-import CreateRoles from "./databases/role.seed";
-import { User } from "./user/user.entity";
-import { Role } from "./user/role.entity";
+import { User } from "./entities/user.entity";
+import { Role } from "./entities/role.entity";
+import { Permission } from "./entities/permission.entity";
+import { Menu } from "./entities/menu.enity";
+import { DataSource, DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
 
 export const db_config = {
-  type: 'better-sqlite3',
-  // host: 'localhost',
-  // port: 3306,
-  // username: 'root',
-  // password: 'admin1234',
-  database: 'test.db',
-  seeds: [CreateRoles],
-  entities: [User, Role],
+  // type: 'better-sqlite3',
+  type: 'mysql',
+  host: 'localhost',
+  port: 3306,
+  username: 'root',
+  password: 'admin1234',
+  database: 'test',
+  // seeds: [CreateRoles, CreateUsers, CreatePermission, CreateMenus],
+  entities: [User, Role, Permission, Menu],
   synchronize: true,
+}
+
+export async function insertDataWithPrimaryKeyId(
+  datas: any[],
+  dataSource: DataSource,
+  entity: EntityTarget<ObjectLiteral>,
+) {
+  const repo = dataSource.getRepository(entity);
+  await repo.save(
+    datas.map((data: DeepPartial<ObjectLiteral>[]) => repo.create(data)),
+  );
+  console.warn(
+    '    Seeded ' +
+    datas?.length +
+    ' records to table: ' +
+    repo.metadata.tableName,
+  );
 }

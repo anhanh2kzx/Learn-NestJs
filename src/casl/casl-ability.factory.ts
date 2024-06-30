@@ -6,8 +6,8 @@ import {
   InferSubjects,
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
-import { User } from '../user/user.entity';
-import { Role } from '../user/role.entity';
+import { User } from '../entities/user.entity';
+import { Role } from '../entities/role.entity';
 
 export type Actions = 'manage' | 'create' | 'read' | 'update' | 'delete';
 export type Subjects = InferSubjects<typeof User | typeof Role> | 'all';
