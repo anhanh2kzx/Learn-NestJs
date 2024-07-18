@@ -1,37 +1,28 @@
-import {
-  AbilityBuilder,
-  Ability,
-  AbilityClass,
-  ExtractSubjectType,
-  InferSubjects,
-} from '@casl/ability';
+import { AbilityBuilder, AbilityClass, ExtractSubjectType, InferSubjects, PureAbility } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
+import { Menu } from '../entities/menu.enity';
+import { Permission } from '../entities/permission.entity';
 
-export type Actions = 'manage' | 'create' | 'read' | 'update' | 'delete';
-export type Subjects = InferSubjects<typeof User | typeof Role> | 'all';
-
-export type AppAbility = Ability<[Actions, Subjects]>;
+type Subjects = InferSubjects<typeof User | typeof Role | typeof Menu | typeof Permission> | 'all';
+export type AppAbility = PureAbility<[string, Subjects]>;
 
 @Injectable()
-export class CaslAbilityFactory {
+export class AbilityFactory {
   createForUser(user: User) {
-    const { can, cannot, build } = new AbilityBuilder<
-      Ability<[Actions, Subjects]>
-    >(Ability as AbilityClass<AppAbility>);
+    const { can, cannot, build } = new AbilityBuilder(PureAbility as AbilityClass<AppAbility>);
 
-    if (user?.roles.some((role) => role?.name === 'admin')) {
-      can('manage', 'all');
-    } else {
-      can('read', 'all');
-      can('update', User, { id: user?.id });
-      cannot('delete', User, { id: user?.id });
-    }
+    user.roles.forEach(role => {
+      role.menus.forEach(menu => {
+        menu.permissions.forEach(permission => {
+          can(permission.name, 'all');
+        });
+      });
+    });
 
     return build({
-      detectSubjectType: (item) =>
-        item.constructor as ExtractSubjectType<Subjects>,
+      detectSubjectType: item => item.constructor as ExtractSubjectType<Subjects>,
     });
   }
 }

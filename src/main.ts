@@ -7,7 +7,7 @@ import { runSeeders } from 'typeorm-extension';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-  await setupDB();
+  // await setupDB();
   await app.listen(3000);
 }
 bootstrap();

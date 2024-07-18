@@ -9,6 +9,12 @@ export class Permission {
   @Column()
   name: string;
 
+  @Column()
+  action: string;
+
+  @Column()
+  subject: string;
+
   @ManyToMany(() => Menu, (menu) => menu.permissions)
   menus: Menu[];
 }

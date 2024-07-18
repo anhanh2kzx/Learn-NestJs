@@ -1,11 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import { Action } from './action.enum';
+import { PolicyHandler } from './policy-handler.interface';
 
-export interface RequiredRule {
-  action: Action;
-  subject: any;
-}
-
-export const CHECK_ABILITY = 'check_ability';
-export const CheckAbilities = (...requirements: RequiredRule[]) =>
-  SetMetadata(CHECK_ABILITY, requirements);
+export const CHECK_POLICIES_KEY = 'check_policy';
+export const CheckPolicies = (...handlers: PolicyHandler[]) => SetMetadata(CHECK_POLICIES_KEY, handlers);

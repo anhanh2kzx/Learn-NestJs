@@ -1,27 +1,15 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Put,
-  Param,
-  Delete,
-  UseGuards,
-  Patch,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CheckAbilities } from '../casl/check-abilities.decorator';
-import { Action } from '../casl/action.enum';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
+import { CheckPolicies } from '../casl/check-abilities.decorator';
+import { Action } from '../casl/action.enum';
 
-// @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) {
+  }
 
-  @CheckAbilities({ action: Action.Read, subject: User })
   @Get()
   findAll() {
     return this.userService.findAll();
@@ -39,25 +27,21 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @CheckAbilities({ action: Action.Update, subject: User })
   @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: Partial<User>) {
     return this.userService.update(+id, updateUserDto);
   }
 
-  @CheckAbilities({ action: Action.Delete, subject: User })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }
 
-  @CheckAbilities({ action: Action.Read, subject: Role })
   @Get('/roles')
   findAllRoles() {
     return this.userService.findAllRoles();
   }
 
-  @CheckAbilities({ action: Action.Read, subject: Role })
   @Get('/roles/:id')
   findOneRole(@Param('id') id: string) {
     return this.userService.findOneRole(+id);
@@ -69,13 +53,11 @@ export class UserController {
     return this.userService.createRole(createRoleDto);
   }
 
-  @CheckAbilities({ action: Action.Update, subject: Role })
   @Put('/roles/:id')
   updateRole(@Param('id') id: string, @Body() updateRoleDto: Partial<Role>) {
     return this.userService.updateRole(+id, updateRoleDto);
   }
 
-  @CheckAbilities({ action: Action.Delete, subject: Role })
   @Delete('/roles/:id')
   removeRole(@Param('id') id: string) {
     return this.userService.removeRole(+id);
@@ -95,5 +77,11 @@ export class UserController {
     @Body('roleIds') roleIds: number[],
   ) {
     return this.userService.addRolesToUser(+userId, roleIds);
+  }
+
+  @Get('/test-permission')
+  @CheckPolicies((ability) => ability.can(Action.Read, 'all'))
+  testPermission() {
+    return 'This action returns all resources';
   }
 }

@@ -23,6 +23,21 @@ export class UserService {
     });
   }
 
+  async getPermissions(id: number){
+    return this.usersRepository.findOne({
+      where: { id },
+      relations: ['roles', 'roles.menus', 'roles.menus.permissions'],
+    });
+  }
+
+  async validateUser(username: string, pass: string): Promise<User> {
+    const user = await this.usersRepository.findOne({where:{username}});
+    if (user && (await bcrypt.compare(pass, user.password))) {
+      return user;
+    }
+    return null;
+  }
+
   async findOneByUsername(username: string): Promise<User> {
     return this.usersRepository.findOne({
       where: { username },

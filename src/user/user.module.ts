@@ -22,6 +22,7 @@ import { RoleController } from '../controllers/role.controller';
     PermissionController,
     RoleController,
   ],
-  exports: [UserService, MenuService, PermissionService, RoleService],
+  exports: [UserService, MenuService, PermissionService, RoleService, TypeOrmModule],
 })
-export class UserModule {}
+export class UserModule {
+}
